@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Phishing Detection</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Phishing Detection Dashboard</h1>
+        <input type="text" id="url-input" placeholder="Enter URL to check">
+        <button id="check-url">Check URL</button>
+        <div id="url-result"></div>
+
+        <h2>Recent Scans</h2>
+        <div id="scan-history"></div>
+
+        <h2>Spot the Fake URL</h2>
+        <div id="quiz-container"></div>
+
+    </div>
+
+    <script>
+        async function fetchScanHistory() {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch('http://localhost:5000/api/scans/history', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const history = await response.json();
+            document.getElementById('scan-history').innerHTML = history.map(scan => `<div>${scan.url} - ${scan.result}</div>`).join('');
+        }
+
+        document.getElementById('check-url').addEventListener('click', async () => {
+            const url = document.getElementById('url-input').value;
+            const response = await fetch('http://localhost:5000/api/phishing/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url })
+            });
+
+            const data = await response.json();
+            document.getElementById('url-result').innerHTML = `Safety Score: ${data.safetyScore}%`;
+            await fetchScanHistory();
+        });
+
+        // Call function to fetch recent scans
+        fetchScanHistory();
+    </script>
+</body>
+
+</html>

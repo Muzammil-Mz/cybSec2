@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spot the Fake URL Quiz</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://globalbanking.ac.uk/media/d4ibkep2/hero-image-4-1.webp') center/cover no-repeat fixed;
+      padding: 2rem;
+      background-color: #f4f4f4;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    header {
+      background-color: #0d1b2a;
+      margin-top: 5px;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: right;
+      gap: 10rem;
+      list-style: none;
+      padding: 5rem;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      gap: 5rem;
+    }
+
+    nav a {
+      color: #e0e0e0;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+      margin-left: 80px;
+    }
+
+    nav a:hover {
+      color: #00ffe0;
+    }
+
+    .question-container {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin: 0.5rem 0;
+    }
+
+    .result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="quiz.html">Spot the Fake</a></li>
+        <li><a href="learn.html">Learn</a></li>
+        <li><a href="report.html">Report Phishing</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <h1 style="margin-top: 50px; background-color:slategrey;">🔍 Spot the Fake URL Quiz</h1>
+
+  <div id="quizContainer" class="question-container">
+    <p style="color: black;">Click the button below to begin the quiz. Try to identify the suspicious URLs.</p>
+    <button id="quizBtn">Start Quiz</button>
+  </div>
+
+  <script type="module">
+    const quizData = [
+      {
+        question: "Which of these URLs is suspicious?",
+        options: ["https://paypal.com", "http://paypa1.com"],
+        answer: "http://paypa1.com"
+      },
+      {
+        question: "Which URL looks safe?",
+        options: ["http://secure-amazon-login.net", "https://amazon.com"],
+        answer: "https://amazon.com"
+      },
+      {
+        question: "Identify the fake Microsoft login page:",
+        options: ["https://login.microsoft.com", "http://micr0soft-support.com"],
+        answer: "http://micr0soft-support.com"
+      },
+      {
+        question: "Which of these is likely a phishing link?",
+        options: ["https://facebook.com/security", "http://faceb00k-helpdesk.ru"],
+        answer: "http://faceb00k-helpdesk.ru"
+      },
+      {
+        question: "Which link should you avoid?",
+        options: ["http://secure-update.net/bank", "https://yourbank.com"],
+        answer: "http://secure-update.net/bank"
+      },
+      {
+        question: "Which Gmail link is suspicious?",
+        options: ["https://gmail.com", "http://gma1l-login.info"],
+        answer: "http://gma1l-login.info"
+      },
+      {
+        question: "Choose the safe Apple login URL:",
+        options: ["http://apple-verify.com", "https://apple.com"],
+        answer: "https://apple.com"
+      },
+      {
+        question: "Spot the fake Netflix site:",
+        options: ["https://netflix.com", "http://netfl1x-accountlogin.org"],
+        answer: "http://netfl1x-accountlogin.org"
+      },
+      {
+        question: "Which Amazon link is legitimate?",
+        options: ["https://amazon.com", "http://amazo-n-deals.ru"],
+        answer: "https://amazon.com"
+      },
+      {
+        question: "Which PayPal link is fake?",
+        options: ["http://paypal-secure-login.biz", "https://paypal.com"],
+        answer: "http://paypal-secure-login.biz"
+      },
+      {
+        question: "Identify the phishing link:",
+        options: ["http://update-dropboxfiles.net", "https://dropbox.com"],
+        answer: "http://update-dropboxfiles.net"
+      },
+      {
+        question: "Which of these might be a spoofed site?",
+        options: ["https://linkedin.com", "http://1inkedin-login.uk"],
+        answer: "http://1inkedin-login.uk"
+      },
+      {
+        question: "Spot the impersonating government site:",
+        options: ["https://gov.uk", "http://gov-login-support.co"],
+        answer: "http://gov-login-support.co"
+      },
+      {
+        question: "Choose the suspicious eBay link:",
+        options: ["https://ebay.com", "http://ebay-accountverify.ru"],
+        answer: "http://ebay-accountverify.ru"
+      },
+      {
+        question: "Which is the fake Instagram page?",
+        options: ["https://instagram.com", "http://1nstagram-helpdesk.com"],
+        answer: "http://1nstagram-helpdesk.com"
+      }
+    ];
+
+
+    let currentQuestion = 0;
+
+    const quizContainer = document.getElementById("quizContainer");
+
+    const renderQuestion = () => {
+      const q = quizData[currentQuestion];
+      quizContainer.innerHTML = `
+        <div class="question-container">
+          <p><strong>Question ${currentQuestion + 1}:</strong> ${q.question}</p>
+          <ul>
+            ${q.options.map(option => `<li><button class="answerBtn">${option}</button></li>`).join('')}
+          </ul>
+          <p id="feedback" class="result"></p>
+        </div>
+      `;
+    };
+
+    document.body.addEventListener('click', (e) => {
+      if (e.target.id === 'quizBtn') {
+        renderQuestion();
+      }
+
+      if (e.target.classList.contains('answerBtn')) {
+        const selected = e.target.textContent;
+        const correct = quizData[currentQuestion].answer;
+        const feedback = document.getElementById('feedback');
+
+        if (selected === correct) {
+          feedback.textContent = "✅ Correct! That is a phishing URL.";
+          feedback.style.color = "green";
+        } else {
+          feedback.textContent = "❌ Incorrect. That is a legitimate URL.";
+          feedback.style.color = "red";
+        }
+
+        if (currentQuestion < quizData.length - 1) {
+          const nextBtn = document.createElement("button");
+          nextBtn.id = "nextBtn";
+          nextBtn.textContent = "Next Question";
+          quizContainer.appendChild(nextBtn);
+        } else {
+          const endBtn = document.createElement("button");
+          endBtn.textContent = "Finish Quiz";
+          endBtn.onclick = () => {
+            quizContainer.innerHTML = "<p>🎉 Quiz completed! Stay alert and always double-check URLs.</p>";
+          };
+          quizContainer.appendChild(endBtn);
+        }
+      }
+
+      if (e.target.id === 'nextBtn') {
+        currentQuestion++;
+        renderQuestion();
+      }
+    });
+  </script>
+</body>
+
+</html>
